@@ -5,8 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "lint": "eslint . --ext .js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "npx eslint .",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js"
   },
   "repository": {
     "type": "git",
@@ -19,13 +20,16 @@
   },
   "homepage": "https://github.com/alaarajab/se_project_express#readme",
   "dependencies": {
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "mongoose": "^8.18.3",
+    "validator": "^13.15.15"
   },
   "devDependencies": {
     "eslint": "^8.57.1",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.10.2",
     "eslint-plugin-import": "^2.32.0",
+    "nodemon": "^3.1.10",
     "prettier": "^2.8.8"
   }
 }
