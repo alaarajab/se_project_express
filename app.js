@@ -8,13 +8,15 @@ const app = express();
 app.use(express.json());
 app.use("/", mainRouter);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 // MongoDB connection
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db")
   .then(() => console.log("Connected to MongoDB"))
   .catch(console.error);
+
+const routes = require("./routes");
 
 // Start server
 app.listen(port, () => {
