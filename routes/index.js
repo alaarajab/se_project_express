@@ -4,7 +4,7 @@ const itemRouter = require("./clothingItems");
 
 const mongoose = require("mongoose");
 router.use("/users", userRouter);
-router.use("/clothingItems", itemRouter);
+router.use("/items", itemRouter);
 // Test route to check database connection
 
 router.use((req, res) => {

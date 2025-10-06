@@ -28,10 +28,15 @@ const clothingItemSchema = new mongoose.Schema({
       message: "Invalid URL format",
     },
   },
-  owner: {
+  /* owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User", // reference to user model
     required: true,
+  },*/
+  owner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: false, // ✅ allow creation without auth
   },
   likes: [
     {

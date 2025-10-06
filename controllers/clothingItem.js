@@ -3,25 +3,36 @@ const ClothingItem = require("../models/clothingItem");
 const createItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
   const owner = req.user._id;
+
   ClothingItem.create({ name, weather, imageUrl, owner })
-    .then((item) => res.status(201).send(item))
+    .then((item) => {
+      res.status(CREATED_STATUS_CODE).send({
+        _id: item._id,
+        name: item.name,
+        weather: item.weather,
+        imageUrl: item.imageUrl,
+        owner: item.owner,
+      });
+    })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res.status(400).send({ message: err.message });
+        return res
+          .status(BAD_REQUEST_STATUS_CODE)
+          .send({ message: err.message });
       }
       console.error(err);
       return res
-        .status(500)
+        .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
         .send({ message: "An error occurred on the server" });
     });
 };
 const getItems = (req, res) => {
   ClothingItem.find({})
-    .then((items) => res.status(200).send(items))
+    .then((items) => res.status(OK_STATUS_CODE).send(items))
     .catch((err) => {
       console.error(err);
       return res
-        .status(500)
+        .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
         .send({ message: "An error occurred on the server" });
     });
 };
@@ -30,38 +41,50 @@ const updateItem = (req, res) => {
   const { imageUrl } = req.body;
   ClothingItem.findByIdAndUpdate(itemId, { $set: { imageUrl } })
     .orFail()
-    .then((item) => res.status(200).send({ data: item }))
+    .then((item) => res.status(OK_STATUS_CODE).send({ data: item }))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res.status(400).send({ message: err.message });
+        return res
+          .status(BAD_REQUEST_STATUS_CODE)
+          .send({ message: err.message });
       }
       if (err.name === "CastError") {
-        return res.status(400).send({ message: "Invalid item ID" });
+        return res
+          .status(BAD_REQUEST_STATUS_CODE)
+          .send({ message: "Invalid item ID" });
       }
       console.error(err);
       return res
-        .status(500)
+        .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
         .send({ message: "An error occurred on the server" });
     });
 };
+
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
   ClothingItem.findByIdAndDelete(itemId)
     .orFail()
-    .then((item) => res.status(200).send({ data: item }))
+    .then((item) => res.status(OK_STATUS_CODE).send({ data: item }))
     .catch((err) => {
       if (err.name === "CastError") {
-        return res.status(400).send({ message: "Invalid item ID" });
+        return res
+          .status(BAD_REQUEST_STATUS_CODE)
+          .send({ message: "Invalid item ID" });
+      }
+      if (err.name === "DocumentNotFoundError") {
+        return res
+          .status(NOT_FOUND_STATUS_CODE)
+          .send({ message: "item ID not found" });
       }
       console.error(err);
       return res
-        .status(500)
+        .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
         .send({ message: "An error occurred on the server" });
     });
 };
 const likeItem = (req, res) => {
   const { itemId } = req.params;
-  const userId = req.user._id; // comes from auth middleware
+  const userId = req.user._id;
 
   ClothingItem.findByIdAndUpdate(
     itemId,
@@ -69,17 +92,21 @@ const likeItem = (req, res) => {
     { new: true }
   )
     .orFail()
-    .then((item) => res.status(200).send({ data: item }))
+    .then((item) => res.status(OK_STATUS_CODE).send({ data: item }))
     .catch((err) => {
       if (err.name === "CastError") {
-        return res.status(400).send({ message: "Invalid item ID" });
+        return res
+          .status(BAD_REQUEST_STATUS_CODE)
+          .send({ message: "Invalid item ID" });
       }
       if (err.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: "Item not found" });
+        return res
+          .status(NOT_FOUND_STATUS_CODE)
+          .send({ message: "Item not found" });
       }
       console.error(err);
       return res
-        .status(500)
+        .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
         .send({ message: "An error occurred on the server" });
     });
 };
@@ -91,10 +118,10 @@ const unlikeItem = (req, res) => {
     .orFail()
     .then((item) => {
       // Check if user has liked the item
-      if (!item.likes.includes(userId)) {
+      if (item.likes.includes(userId)) {
         // stop execution, return nothing further
         return res
-          .status(400)
+          .status(BAD_REQUEST_STATUS_CODE)
           .send({ message: "You haven't liked this item yet" });
       }
 
@@ -105,20 +132,24 @@ const unlikeItem = (req, res) => {
     .then((updatedItem) => {
       // Only send if updatedItem exists (item was actually liked)
       if (updatedItem) {
-        return res.status(200).send({ data: updatedItem });
+        return res.status(OK_STATUS_CODE).send({ data: updatedItem });
       }
       // else do nothing (response already sent for 400 case)
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        return res.status(400).send({ message: "Invalid item ID" });
+        return res
+          .status(BAD_REQUEST_STATUS_CODE)
+          .send({ message: "Invalid item ID" });
       }
       if (err.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: "Item not found" });
+        return res
+          .status(NOT_FOUND_STATUS_CODE)
+          .send({ message: "Item not found" });
       }
       console.error(err);
       return res
-        .status(500)
+        .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
         .send({ message: "An error occurred on the server" });
     });
 };
