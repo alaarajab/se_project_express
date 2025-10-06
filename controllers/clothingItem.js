@@ -91,7 +91,7 @@ const deleteItem = (req, res) => {
 };
 const likeItem = (req, res) => {
   const { itemId } = req.params;
-  const userId = req.user._id;
+  /*const userId = req.user._id;*/
 
   ClothingItem.findByIdAndUpdate(
     itemId,
@@ -119,9 +119,9 @@ const likeItem = (req, res) => {
 };
 const unlikeItem = (req, res) => {
   const { itemId } = req.params;
-  const userId = req.user._id;
+  /* const userId = req.user._id; */
 
-  ClothingItem.findById(itemId)
+  return ClothingItem.findById(itemId)
     .orFail()
     .then((item) => {
       // Check if user has liked the item
