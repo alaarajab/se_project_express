@@ -1,4 +1,11 @@
 const ClothingItem = require("../models/clothingItem");
+const {
+  BAD_REQUEST_STATUS_CODE,
+  NOT_FOUND_STATUS_CODE,
+  INTERNAL_SERVER_ERROR_STATUS_CODE,
+  CREATED_STATUS_CODE,
+  OK_STATUS_CODE,
+} = require("../utils/constants");
 
 const createItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
