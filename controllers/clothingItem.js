@@ -116,7 +116,7 @@ const likeItem = (req, res) => {
         .send({ message: "An error occurred on the server" });
     });
 };
-const unlikeItem = (req, res) => {
+/* const unlikeItem = (req, res) => {
   const { itemId } = req.params;
   const userId = req.user._id;
 
@@ -156,8 +156,49 @@ const unlikeItem = (req, res) => {
         .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
         .send({ message: "An error occurred on the server" });
     });
-};
+}; */
+const unlikeItem = (req, res) => {
+  const { itemId } = req.params;
+  const userId = req.user._id;
 
+  return ClothingItem.findById(itemId)
+    .orFail()
+    .then((item) => {
+      // Remove the user from likes if present
+      if (item.likes.includes(userId)) {
+        item.likes.pull(userId);
+      }
+
+      return item.save().then((savedItem) => {
+        return res.status(OK_STATUS_CODE).send({
+          data: {
+            _id: savedItem._id,
+            name: savedItem.name,
+            weather: savedItem.weather,
+            imageUrl: savedItem.imageUrl,
+            owner: savedItem.owner,
+            likes: savedItem.likes,
+          },
+        });
+      });
+    })
+    .catch((err) => {
+      if (err.name === "CastError") {
+        return res
+          .status(BAD_REQUEST_STATUS_CODE)
+          .send({ message: "Invalid item ID" });
+      }
+      if (err.name === "DocumentNotFoundError") {
+        return res
+          .status(NOT_FOUND_STATUS_CODE)
+          .send({ message: "Item not found" });
+      }
+      console.error(err);
+      return res
+        .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
+        .send({ message: "An error occurred on the server" });
+    });
+};
 module.exports = {
   createItem,
   getItems,
