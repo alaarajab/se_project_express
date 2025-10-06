@@ -91,7 +91,6 @@ const deleteItem = (req, res) => {
 };
 const likeItem = (req, res) => {
   const { itemId } = req.params;
-  /*const userId = req.user._id;*/
 
   ClothingItem.findByIdAndUpdate(
     itemId,
@@ -119,14 +118,14 @@ const likeItem = (req, res) => {
 };
 const unlikeItem = (req, res) => {
   const { itemId } = req.params;
-  /* const userId = req.user._id; */
+  const userId = req.user._id;
 
   return ClothingItem.findById(itemId)
     .orFail()
     .then((item) => {
       // Check if user has liked the item
-      if (item.likes.includes(userId)) {
-        // stop execution, return nothing further
+      if (!item.likes.includes(userId)) {
+        // User hasn't liked the item yet
         return res
           .status(BAD_REQUEST_STATUS_CODE)
           .send({ message: "You haven't liked this item yet" });
@@ -134,14 +133,13 @@ const unlikeItem = (req, res) => {
 
       // Remove the user from likes
       item.likes.pull(userId);
-      return item.save(); // will be passed to next .then()
+      return item.save(); // Pass to next .then()
     })
     .then((updatedItem) => {
-      // Only send if updatedItem exists (item was actually liked)
-      if (updatedItem) {
-        return res.status(OK_STATUS_CODE).send({ data: updatedItem });
-      }
-      // else do nothing (response already sent for 400 case)
+      // Always return a value
+      return updatedItem
+        ? res.status(OK_STATUS_CODE).send({ data: updatedItem })
+        : null;
     })
     .catch((err) => {
       if (err.name === "CastError") {
