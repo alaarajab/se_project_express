@@ -135,12 +135,11 @@ const unlikeItem = (req, res) => {
       item.likes.pull(userId);
       return item.save(); // Pass to next .then()
     })
-    .then((updatedItem) => {
-      // Always return a value
-      return updatedItem
+    .then((updatedItem) =>
+      updatedItem
         ? res.status(OK_STATUS_CODE).send({ data: updatedItem })
-        : null;
-    })
+        : null
+    )
     .catch((err) => {
       if (err.name === "CastError") {
         return res
