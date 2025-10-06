@@ -169,8 +169,8 @@ const unlikeItem = (req, res) => {
         item.likes.pull(userId);
       }
 
-      return item.save().then((savedItem) => {
-        return res.status(OK_STATUS_CODE).send({
+      return item.save().then((savedItem) =>
+        res.status(OK_STATUS_CODE).send({
           data: {
             _id: savedItem._id,
             name: savedItem.name,
@@ -179,8 +179,8 @@ const unlikeItem = (req, res) => {
             owner: savedItem.owner,
             likes: savedItem.likes,
           },
-        });
-      });
+        })
+      );
     })
     .catch((err) => {
       if (err.name === "CastError") {
