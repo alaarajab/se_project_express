@@ -1,11 +1,14 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const { NOT_FOUND_STATUS_CODE } = require("./utils/constants");
 
 const mainRouter = require("./routes/index");
 
 const app = express();
-
+const cors = require("cors");
 // Middleware / routes
+app.use(cors());
+
 app.use(express.json());
 
 const port = process.env.PORT || 3001;
@@ -16,17 +19,17 @@ mongoose
   // eslint-disable-next-line no-console
   .then(() => console.log("Connected to MongoDB"))
   .catch(console.error);
-app.use((req, res, next) => {
-  req.user = {
-    _id: "68dfee1c5a00937340342d17", // paste the _id of the test user created in the previous step
-  };
-  next();
-});
-/* const routes = require("./routes"); */
+// Mount all routes
 app.use("/", mainRouter);
 
+// Catch-all route for unknown endpoints
+app.use((req, res) => {
+  res
+    .status(NOT_FOUND_STATUS_CODE)
+    .send({ message: "Requested resource not found" });
+});
+
 // Start server
-// eslint-disable-next-line no-console
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
