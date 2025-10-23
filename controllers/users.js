@@ -40,7 +40,13 @@ const createUser = async (req, res) => {
         .status(BAD_REQUEST_STATUS_CODE)
         .send({ message: "Email and password are required" });
     }
-
+    // Check if the email already exists before creating the user
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res
+        .status(CONFLICT_STATUS_CODE)
+        .send({ message: "Email already exists" });
+    }
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -50,16 +56,11 @@ const createUser = async (req, res) => {
       email,
       password: hashedPassword,
     });
-
+    // Remove password from output
     const userObj = user.toObject();
     delete userObj.password; // Hide password
     res.status(CREATED_STATUS_CODE).send(userObj);
   } catch (err) {
-    if (err.code === 11000) {
-      return res
-        .status(CONFLICT_STATUS_CODE)
-        .send({ message: "Email already exists" });
-    }
     if (err.name === "ValidationError") {
       return res.status(BAD_REQUEST_STATUS_CODE).send({ message: err.message });
     }
