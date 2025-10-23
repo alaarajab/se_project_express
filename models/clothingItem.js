@@ -32,7 +32,7 @@ const clothingItemSchema = new mongoose.Schema({
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: false, // ✅ allow creation without auth
+    required: false, // allow creation without auth
   },
   likes: [
     {
