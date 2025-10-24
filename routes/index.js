@@ -7,8 +7,6 @@ const { NOT_FOUND_STATUS_CODE } = require("../utils/constants");
 router.post("/signup", createUser);
 router.post("/signin", login);
 
-// Protected routes (require auth)
-
 router.use("/users", userRouter);
 router.use("/items", itemRouter);
 // Test route to check database connection
