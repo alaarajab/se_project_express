@@ -55,5 +55,5 @@ Before committing my code, I updated the sprint.txt file in the root folder. Thi
 
 ## Project Pitch Video
 
-Check out [this video](ADD_LINK_HERE), where I describe my
+Check out [this video](https://youtu.be/dCtKzAeNHj8), where I describe my
 project and some challenges I faced while building it.
