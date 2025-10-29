@@ -5,6 +5,7 @@ const {
   INTERNAL_SERVER_ERROR_STATUS_CODE,
   CREATED_STATUS_CODE,
   OK_STATUS_CODE,
+  FORBIDDEN_STATUS_CODE,
 } = require("../utils/constants");
 
 /**
@@ -66,7 +67,7 @@ const deleteItem = (req, res) => {
       // Ownership check
       if (item.owner.toString() !== userId) {
         return res
-          .status(403)
+          .status(FORBIDDEN_STATUS_CODE)
           .send({ message: "You do not have permission to delete this item" });
       }
 
@@ -103,26 +104,29 @@ const deleteItem = (req, res) => {
  */
 const likeItem = (req, res) => {
   const { itemId } = req.params;
-  const userId = req.user._id;
 
-  ClothingItem.findById(itemId)
-    .orFail()
-    .then((item) => {
-      if (!item.likes.includes(userId)) {
-        item.likes.push(userId);
+  ClothingItem.findByIdAndUpdate(
+    itemId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true }
+  )
+    .then((updatedItem) => {
+      if (!updatedItem) {
+        return res
+          .status(NOT_FOUND_STATUS_CODE)
+          .send({ message: "Item not found" });
       }
-      return item.save().then((savedItem) =>
-        res.status(OK_STATUS_CODE).send({
-          data: {
-            _id: savedItem._id,
-            name: savedItem.name,
-            weather: savedItem.weather,
-            imageUrl: savedItem.imageUrl,
-            owner: savedItem.owner,
-            likes: savedItem.likes,
-          },
-        })
-      );
+
+      res.status(OK_STATUS_CODE).send({
+        data: {
+          _id: updatedItem._id,
+          name: updatedItem.name,
+          weather: updatedItem.weather,
+          imageUrl: updatedItem.imageUrl,
+          owner: updatedItem.owner,
+          likes: updatedItem.likes,
+        },
+      });
     })
     .catch((err) => {
       if (err.name === "CastError") {
@@ -148,26 +152,29 @@ const likeItem = (req, res) => {
  */
 const unlikeItem = (req, res) => {
   const { itemId } = req.params;
-  const userId = req.user._id;
 
-  ClothingItem.findById(itemId)
-    .orFail()
-    .then((item) => {
-      if (item.likes.includes(userId)) {
-        item.likes.pull(userId);
+  ClothingItem.findByIdAndUpdate(
+    itemId,
+    { $pull: { likes: req.user._id } },
+    { new: true }
+  )
+    .then((updatedItem) => {
+      if (!updatedItem) {
+        return res
+          .status(NOT_FOUND_STATUS_CODE)
+          .send({ message: "Item not found" });
       }
-      return item.save().then((savedItem) =>
-        res.status(OK_STATUS_CODE).send({
-          data: {
-            _id: savedItem._id,
-            name: savedItem.name,
-            weather: savedItem.weather,
-            imageUrl: savedItem.imageUrl,
-            owner: savedItem.owner,
-            likes: savedItem.likes,
-          },
-        })
-      );
+
+      res.status(OK_STATUS_CODE).send({
+        data: {
+          _id: updatedItem._id,
+          name: updatedItem.name,
+          weather: updatedItem.weather,
+          imageUrl: updatedItem.imageUrl,
+          owner: updatedItem.owner,
+          likes: updatedItem.likes,
+        },
+      });
     })
     .catch((err) => {
       if (err.name === "CastError") {

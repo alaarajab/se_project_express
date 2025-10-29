@@ -8,27 +8,9 @@ const {
   CREATED_STATUS_CODE,
   OK_STATUS_CODE,
   CONFLICT_STATUS_CODE,
+  UNAUTHORIZED_STATUS_CODE,
 } = require("../utils/constants");
 const { JWT_SECRET } = require("../utils/config");
-
-// Get all users
-const getUsers = async (req, res) => {
-  try {
-    const users = await User.find({});
-    // Exclude passwords
-    const usersSafe = users.map((user) => {
-      const obj = user.toObject();
-      delete obj.password;
-      return obj;
-    });
-    res.status(OK_STATUS_CODE).send(usersSafe);
-  } catch (err) {
-    console.error(err);
-    res
-      .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
-      .send({ message: "An error occurred on the server" });
-  }
-};
 
 // Create new user (signup)
 const createUser = async (req, res) => {
@@ -63,6 +45,11 @@ const createUser = async (req, res) => {
   } catch (err) {
     if (err.name === "ValidationError") {
       return res.status(BAD_REQUEST_STATUS_CODE).send({ message: err.message });
+    }
+    if (err.code === 11000) {
+      return res
+        .status(CONFLICT_STATUS_CODE)
+        .send({ message: "Email already exists" });
     }
     console.error(err);
     res
@@ -139,12 +126,13 @@ const login = async (req, res) => {
     const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: "7d" });
     res.status(OK_STATUS_CODE).send({ token });
   } catch (err) {
-    res.status(401).send({ message: "Incorrect email or password" });
+    res
+      .status(UNAUTHORIZED_STATUS_CODE)
+      .send({ message: "Incorrect email or password" });
   }
 };
 
 module.exports = {
-  getUsers,
   createUser,
   getCurrentUser,
   updateUserProfile,
