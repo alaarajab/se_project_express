@@ -124,11 +124,17 @@ const login = async (req, res) => {
     const user = await User.findUserByCredentials(email, password);
 
     const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: "7d" });
-    res.status(OK_STATUS_CODE).send({ token });
+    res.send({ token });
   } catch (err) {
+    if (err.message === "Incorrect email or password") {
+      return res
+        .status(UNAUTHORIZED_STATUS_CODE)
+        .send({ message: "Incorrect email or password" });
+    }
+
     res
-      .status(UNAUTHORIZED_STATUS_CODE)
-      .send({ message: "Incorrect email or password" });
+      .status(INTERNAL_SERVER_ERROR_STATUS_CODE)
+      .send({ message: "Internal server error" });
   }
 };
 

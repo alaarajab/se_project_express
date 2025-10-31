@@ -10,11 +10,6 @@ const port = process.env.PORT || 3001;
 // Middleware / routes
 app.use(cors());
 app.use(express.json());
-//Temp middleware to simulate logged-in user
-//app.use((req, res, next) => {
-//req.user = { _id: "64a66f4f5f3c2b001f8e4b8a" }; // Example user ID
-//next();
-//});
 
 // Mount all routes
 app.use("/", mainRouter);
