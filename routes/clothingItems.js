@@ -8,7 +8,10 @@ const {
   unlikeItem,
 } = require("../controllers/clothingItem");
 
+//start with /items
+
 // Public route
+//GET request to /items/
 router.get("/", getItems); // anyone can view items
 
 // Protected routes (require auth)

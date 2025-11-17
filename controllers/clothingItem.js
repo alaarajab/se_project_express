@@ -44,7 +44,7 @@ const createItem = (req, res) => {
  */
 const getItems = (req, res) => {
   ClothingItem.find({})
-    .then((items) => res.send({ data: items }))
+    .then((items) => res.send(items))
     .catch((err) => {
       console.error(err);
       return res
