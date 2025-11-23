@@ -124,7 +124,7 @@ const login = async (req, res) => {
     const user = await User.findUserByCredentials(email, password);
 
     const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: "7d" });
-    res.send({ token });
+    res.send({ jwt: token });
   } catch (err) {
     if (err.message === "Incorrect email or password") {
       return res
