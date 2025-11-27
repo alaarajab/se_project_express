@@ -125,6 +125,7 @@ const likeItem = (req, res) => {
           imageUrl: updatedItem.imageUrl,
           owner: updatedItem.owner,
           likes: updatedItem.likes,
+          isLiked: updatedItem.likes.includes(req.user._id),
         },
       });
     })
@@ -173,6 +174,7 @@ const unlikeItem = (req, res) => {
           imageUrl: updatedItem.imageUrl,
           owner: updatedItem.owner,
           likes: updatedItem.likes,
+          isLiked: updatedItem.likes.includes(req.user._id),
         },
       });
     })
