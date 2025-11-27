@@ -98,10 +98,6 @@ const deleteItem = (req, res) => {
     });
 };
 
-/**
- * Like a clothing item
- * Adds the logged-in user's ID to the likes array (no duplicates)
- */
 const likeItem = (req, res) => {
   const { itemId } = req.params;
 
@@ -147,10 +143,6 @@ const likeItem = (req, res) => {
     });
 };
 
-/**
- * Unlike a clothing item
- * Removes the logged-in user's ID from the likes array
- */
 const unlikeItem = (req, res) => {
   const { itemId } = req.params;
 
