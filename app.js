@@ -2,12 +2,13 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const mainRouter = require("./routes/index");
-const { NOT_FOUND_STATUS_CODE } = require("./utils/constants");
+const errorHandler = require("./middlewares/error-handler");
+const { NotFoundError } = require("./utils/errors");
 
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Middleware / routes
+// Middleware
 app.use(cors());
 app.use(express.json());
 
@@ -15,16 +16,16 @@ app.use(express.json());
 app.use("/", mainRouter);
 
 // Catch-all route for unknown endpoints
-app.use((req, res) => {
-  res
-    .status(NOT_FOUND_STATUS_CODE)
-    .send({ message: "Requested resource not found" });
+app.use((req, res, next) => {
+  next(new NotFoundError("Requested resource not found"));
 });
+
+// Centralized error handler (must be last)
+app.use(errorHandler);
 
 // MongoDB connection
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db")
-  // eslint-disable-next-line no-console
   .then(() => console.log("Connected to MongoDB"))
   .catch(console.error);
 
