@@ -2,10 +2,15 @@ const router = require("express").Router();
 const userRouter = require("./users");
 const itemRouter = require("./clothingItems");
 const { createUser, login } = require("../controllers/users");
+// import validators
+const {
+  validateUserBody,
+  validateLoginBody,
+} = require("../middlewares/validation");
 
-// Public routes (accessible without auth)
-router.post("/signup", createUser);
-router.post("/signin", login);
+// Public routes
+router.post("/signup", validateUserBody, createUser); // validate signup body
+router.post("/signin", validateLoginBody, login); // validate login body
 
 router.use("/users", userRouter);
 router.use("/items", itemRouter);
