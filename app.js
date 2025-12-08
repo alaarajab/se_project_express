@@ -1,9 +1,11 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const { errors } = require("celebrate");
 const mainRouter = require("./routes/index");
 const errorHandler = require("./middlewares/error-handler");
 const { NotFoundError } = require("./utils/errors");
+const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -11,6 +13,8 @@ const port = process.env.PORT || 3001;
 // Middleware
 app.use(cors());
 app.use(express.json());
+//Enable request logger BEFORE all routes
+app.use(requestLogger);
 
 // Mount all routes
 app.use("/", mainRouter);
@@ -19,7 +23,10 @@ app.use("/", mainRouter);
 app.use((req, res, next) => {
   next(new NotFoundError("Requested resource not found"));
 });
-
+// Enable error logger AFTER routes
+app.use(errorLogger);
+// Celebrate error handler (MUST be before centralized handler)
+app.use(errors());
 // Centralized error handler (must be last)
 app.use(errorHandler);
 
