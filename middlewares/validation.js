@@ -77,3 +77,15 @@ module.exports.validateId = celebrate({
     }),
   }),
 });
+// Validation for updating user profile
+module.exports.validateUserUpdateBody = celebrate({
+  body: Joi.object({
+    name: Joi.string().min(2).max(30).messages({
+      "string.min": 'The minimum length of the "name" field is 2',
+      "string.max": 'The maximum length of the "name" field is 30',
+    }),
+    avatar: Joi.string().custom(validateURL).messages({
+      "string.uri": 'The "avatar" field must be a valid URL',
+    }),
+  }).min(1), // Require at least one field
+});
