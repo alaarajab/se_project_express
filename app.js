@@ -16,13 +16,6 @@ app.use(cors());
 app.use(express.json());
 
 // 🔹 Crash-test route (FOR REVIEW ONLY)
-app.get("/crash-test", (req, res) => {
-  setTimeout(() => {
-    throw new Error("Server will crash now"); // simulate crash
-  }, 0);
-
-  res.send("Server will crash shortly (check PM2 logs)");
-});
 
 //Enable request logger BEFORE all routes
 app.use(requestLogger);
