@@ -17,6 +17,12 @@ app.use(express.json());
 //Enable request logger BEFORE all routes
 app.use(requestLogger);
 
+app.get("/crash-test", () => {
+  setTimeout(() => {
+    throw new Error("Server will crash now");
+  }, 0);
+});
+
 // Mount all routes
 app.use("/", mainRouter);
 
