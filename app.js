@@ -14,8 +14,6 @@ const port = process.env.PORT || 3001;
 // Middleware
 app.use(cors());
 app.use(express.json());
-//Enable request logger BEFORE all routes
-app.use(requestLogger);
 
 // 🔹 Crash-test route (FOR REVIEW ONLY)
 app.get("/crash-test", (req, res) => {
@@ -24,7 +22,8 @@ app.get("/crash-test", (req, res) => {
   }, 0);
   res.send("Server will crash shortly (check PM2 logs)");
 });
-
+//Enable request logger BEFORE all routes
+app.use(requestLogger);
 // Mount all routes
 app.use("/", mainRouter);
 
