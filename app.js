@@ -15,28 +15,32 @@ const port = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
+// Enable request logger BEFORE all routes
+app.use(requestLogger);
+
 // 🔹 Crash-test route (FOR REVIEW ONLY)
+// Must be before mainRouter and 404 catch-all
 app.get("/crash-test", (req, res) => {
   setTimeout(() => {
     throw new Error("Server will crash now");
   }, 0);
-
   res.send("Server will crash shortly (check PM2 logs)");
 });
 
-//Enable request logger BEFORE all routes
-app.use(requestLogger);
-// Mount all routes
+// Mount main routes
 app.use("/", mainRouter);
 
 // Catch-all route for unknown endpoints
 app.use((req, res, next) => {
   next(new NotFoundError("Requested resource not found"));
 });
+
 // Enable error logger AFTER routes
 app.use(errorLogger);
+
 // Celebrate error handler (MUST be before centralized handler)
 app.use(errors());
+
 // Centralized error handler (must be last)
 app.use(errorHandler);
 
