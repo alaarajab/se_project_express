@@ -18,8 +18,8 @@ router.get("/", getItems); // anyone can view items
 // Protected routes (require auth)
 // Protected routes (require auth)
 router.post("/", auth, validateCardBody, createItem); // validate body
-router.delete("/:itemId", auth, validateId, deleteItem); // validate param
-router.put("/:itemId/likes", auth, validateId, likeItem); // validate param
-router.delete("/:itemId/likes", auth, validateId, unlikeItem); // validate param
+router.delete("/:id", auth, validateId, deleteItem); // validate param
+router.put("/:id/likes", auth, validateId, likeItem); // validate param
+router.delete("/:id/likes", auth, validateId, unlikeItem); // validate param
 
 module.exports = router;

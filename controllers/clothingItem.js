@@ -30,10 +30,10 @@ const getItems = (req, res, next) => {
 
 // Delete an item
 const deleteItem = (req, res, next) => {
-  const { itemId } = req.params;
+  const { id } = req.params;
   const userId = req.user._id;
 
-  ClothingItem.findById(itemId)
+  ClothingItem.findById(id)
     .orFail(() => new NotFoundError("Item not found"))
     .then((item) => {
       if (item.owner.toString() !== userId) {
@@ -59,10 +59,10 @@ const deleteItem = (req, res, next) => {
 
 // Like an item
 const likeItem = (req, res, next) => {
-  const { itemId } = req.params;
+  const { id } = req.params;
 
   ClothingItem.findByIdAndUpdate(
-    itemId,
+    id,
     { $addToSet: { likes: req.user._id } },
     { new: true }
   )
@@ -82,10 +82,10 @@ const likeItem = (req, res, next) => {
 
 // Unlike an item
 const unlikeItem = (req, res, next) => {
-  const { itemId } = req.params;
+  const { id } = req.params;
 
   ClothingItem.findByIdAndUpdate(
-    itemId,
+    id,
     { $pull: { likes: req.user._id } },
     { new: true }
   )
