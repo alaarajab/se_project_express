@@ -17,10 +17,12 @@ app.use(express.json());
 //Enable request logger BEFORE all routes
 app.use(requestLogger);
 
-app.get("/crash-test", () => {
+// 🔹 Crash-test route (FOR REVIEW ONLY)
+app.get("/crash-test", (req, res) => {
   setTimeout(() => {
     throw new Error("Server will crash now");
   }, 0);
+  res.send("Server will crash shortly (check PM2 logs)");
 });
 
 // Mount all routes
