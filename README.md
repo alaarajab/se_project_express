@@ -1,6 +1,8 @@
 # WTWR (What to Wear?): Back End
 
-This back-end project focuses on creating a secure and fully functional server for the WTWR (What to Wear?) application. I gained a deeper understanding of how to work with databases, set up security and testing, and deploy web applications on a remote machine. In this phase, I implemented authorization, user authentication, and route protection to ensure data security. The ultimate goal was to build a complete server with a robust API and user authorization system.
+This back-end project focuses on creating a secure and fully functional server for the WTWR (What to Wear?) application. Throughout this project, I gained a deeper understanding of working with databases, implementing security best practices, and deploying web applications to a remote server.
+
+Across multiple sprints, I built a complete RESTful API with user authentication, authorization, request validation, centralized error handling, logging, and full cloud deployment. The ultimate goal was to create a production-ready back-end server that securely supports the WTWR client application.
 
 ## Tech Stack / Libraries
 
@@ -15,12 +17,18 @@ This back-end project focuses on creating a secure and fully functional server f
 - **CORS** – Middleware to enable secure cross-origin requests
 - **ESLint** – Code linting to enforce best practices
 - **Jest / Supertest** – Testing framework for API endpoints
+- **celebrate / Joi** – Validation of inbound request data
+- **Winston** – Request and error logging
+- **PM2** – Process manager for running the server in production
+- **nginx** – Reverse proxy and static file server
+- **Certbot / SSL** – HTTPS encryption
+
 
 ## Running the Project
 
-`npm run start` — to launch the server
+npm run start – Launches the server on localhost:3001
 
-`npm run dev` — to launch the server with the hot reload feature
+npm run dev – Launches the server with hot reload enabled
 
 ### Testing
 
@@ -52,8 +60,35 @@ Before committing my code, I updated the sprint.txt file in the root folder. Thi
 - Enhanced Error Handling – 401 Unauthorized for missing or invalid tokens; validation and conflict errors handled properly.
 - CORS Enabled – To allow requests from the client to the server.
 - Testing – Postman collection updated to test authentication, authorization, and protected routes.
-
-## Project Pitch Video
+  
+## Previous Project Pitch Video (sprint 13)
 
 Check out [this video](https://youtu.be/dCtKzAeNHj8), where I describe my
 project and some challenges I faced while building it.
+
+**Sprint 15 (Project 15) – Advanced Middleware & Cloud Deployment**
+
+- In Sprint 15, I focused on making the WTWR back end production-ready by improving reliability, security, and deployment:
+- Centralized Error Handling – Implemented a single global error-handling middleware with custom error classes for different HTTP status codes (400, 401, 403, 404, 409, 500), ensuring consistent and meaningful error responses.
+- Request Validation Middleware – Added validation for request bodies and parameters using celebrate, Joi, and validator to prevent invalid data from reaching controllers.
+- Logging – Implemented request and error logging using Winston, with logs stored in separate files for requests and errors. Log files are excluded from the Git repository.
+- Crash Recovery – Added a /crash-test route to verify server stability and automatic recovery.
+- Cloud Deployment – Deployed the back-end server to a Google Cloud virtual machine.
+- Process Management – Used PM2 to keep the Node.js application running continuously and automatically restart it on failure.
+- Reverse Proxy Configuration – Configured nginx to route requests from public URLs to the Node.js server.
+- Secure Communication – Enabled HTTPS using SSL certificates issued with Certbot.
+- Environment Variables – Stored sensitive data such as JWT secrets and database credentials securely in a .env file.
+- Domain & Subdomains – Registered and configured subdomains for both the frontend and backend.
+- Frontend Integration – Uploaded the frontend to the server and configured nginx to serve it and communicate with the deployed API.
+- Production Readiness – Verified that the application works correctly in both development and production environments without crashing.
+
+## Final Project Pitch Video (sprint 15)
+
+Check out [this video](https://youtu.be/dCtKzAeNHj8), where I describe my
+project and some challenges I faced while building it.
+
+## Links
+
+- [Frontend Repository](https://github.com/alaarajab/se_project_react)
+
+- [Deployment](https://wtwr-wtwr.jumpingcrab.com/)
