@@ -9,17 +9,15 @@ const {
 } = require("../controllers/clothingItem");
 const { validateCardBody, validateId } = require("../middlewares/validation");
 
-//start with /items
+// Routes for /items
 
-// Public route
-//GET request to /items/
-router.get("/", getItems); // anyone can view items
+// Public route: anyone can view items
+router.get("/", getItems);
 
 // Protected routes (require auth)
-// Protected routes (require auth)
-router.post("/", auth, validateCardBody, createItem); // validate body
+router.post("/", auth, validateCardBody, createItem); // validate request body
 router.delete("/:id", auth, validateId, deleteItem); // validate param
-router.put("/:id/likes", auth, validateId, likeItem); // validate param
-router.delete("/:id/likes", auth, validateId, unlikeItem); // validate param
+router.put("/:id/likes", auth, validateId, likeItem); // like an item
+router.delete("/:id/likes", auth, validateId, unlikeItem); // unlike an item
 
 module.exports = router;

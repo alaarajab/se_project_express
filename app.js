@@ -11,12 +11,19 @@ const { requestLogger, errorLogger } = require("./middlewares/logger");
 const app = express();
 const port = process.env.PORT || 3001;
 
+// Simple logger function (replaces console.log/error for ESLint)
+const log = {
+  info: (msg) => process.stdout.write(`INFO: ${msg}\n`),
+  error: (err) => process.stderr.write(`ERROR: ${err}\n`),
+};
+
 // Middleware
 app.use(cors());
 app.use(express.json());
 
 // Enable request logger BEFORE all routes
 app.use(requestLogger);
+
 // Mount main routes
 app.use("/", mainRouter);
 
@@ -37,10 +44,10 @@ app.use(errorHandler);
 // MongoDB connection
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db")
-  .then(() => console.log("Connected to MongoDB"))
-  .catch(console.error);
+  .then(() => log.info("Connected to MongoDB"))
+  .catch(log.error);
 
 // Start server
 app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+  log.info(`Server listening on port ${port}`);
 });

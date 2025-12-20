@@ -11,29 +11,28 @@ const createItem = (req, res, next) => {
   const { name, weather, imageUrl } = req.body;
   const owner = req.user._id;
 
-  ClothingItem.create({ name, weather, imageUrl, owner })
+  return ClothingItem.create({ name, weather, imageUrl, owner })
     .then((item) => res.status(CREATED_STATUS_CODE).send(item))
     .catch((err) => {
       if (err.name === "ValidationError") {
         return next(new BadRequestError(err.message));
       }
-      next(err);
+      return next(err);
     });
 };
 
 // Get all items
-const getItems = (req, res, next) => {
+const getItems = (req, res, next) =>
   ClothingItem.find({})
     .then((items) => res.status(OK_STATUS_CODE).send(items))
-    .catch(next);
-};
+    .catch((err) => next(err));
 
 // Delete an item
 const deleteItem = (req, res, next) => {
   const { id } = req.params;
   const userId = req.user._id;
 
-  ClothingItem.findById(id)
+  return ClothingItem.findById(id)
     .orFail(() => new NotFoundError("Item not found"))
     .then((item) => {
       if (item.owner.toString() !== userId) {
@@ -53,7 +52,7 @@ const deleteItem = (req, res, next) => {
       if (err.name === "CastError") {
         return next(new BadRequestError("Invalid item ID"));
       }
-      next(err);
+      return next(err);
     });
 };
 
@@ -61,7 +60,7 @@ const deleteItem = (req, res, next) => {
 const likeItem = (req, res, next) => {
   const { id } = req.params;
 
-  ClothingItem.findByIdAndUpdate(
+  return ClothingItem.findByIdAndUpdate(
     id,
     { $addToSet: { likes: req.user._id } },
     { new: true }
@@ -70,13 +69,13 @@ const likeItem = (req, res, next) => {
       if (!updatedItem) {
         return next(new NotFoundError("Item not found"));
       }
-      res.status(OK_STATUS_CODE).send(updatedItem);
+      return res.status(OK_STATUS_CODE).send(updatedItem);
     })
     .catch((err) => {
       if (err.name === "CastError") {
         return next(new BadRequestError("Invalid item ID"));
       }
-      next(err);
+      return next(err);
     });
 };
 
@@ -84,7 +83,7 @@ const likeItem = (req, res, next) => {
 const unlikeItem = (req, res, next) => {
   const { id } = req.params;
 
-  ClothingItem.findByIdAndUpdate(
+  return ClothingItem.findByIdAndUpdate(
     id,
     { $pull: { likes: req.user._id } },
     { new: true }
@@ -93,13 +92,13 @@ const unlikeItem = (req, res, next) => {
       if (!updatedItem) {
         return next(new NotFoundError("Item not found"));
       }
-      res.status(OK_STATUS_CODE).send(updatedItem);
+      return res.status(OK_STATUS_CODE).send(updatedItem);
     })
     .catch((err) => {
       if (err.name === "CastError") {
         return next(new BadRequestError("Invalid item ID"));
       }
-      next(err);
+      return next(err);
     });
 };
 

@@ -2,10 +2,7 @@ const router = require("express").Router();
 const { getCurrentUser, updateUserProfile } = require("../controllers/users");
 const auth = require("../middlewares/auth");
 // import validator
-const {
-  validateUserBody,
-  validateUserUpdateBody,
-} = require("../middlewares/validation");
+const { validateUserUpdateBody } = require("../middlewares/validation");
 
 // All routes below require authentication
 router.use(auth);

@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -19,7 +20,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: [true, "Email is required"],
-    unique: true, // ensure uniqueness
+    unique: true,
     validate: {
       validator: (value) => validator.isEmail(value),
       message: "Invalid email format",
@@ -31,9 +32,12 @@ const userSchema = new mongoose.Schema({
     select: false, // exclude password from query results by default
   },
 });
-//  Hash the password before saving to DB
-userSchema.statics.findUserByCredentials = async function (email, password) {
-  const bcrypt = require("bcryptjs");
+
+// Hash and verify credentials
+userSchema.statics.findUserByCredentials = async function findUserByCredentials(
+  email,
+  password
+) {
   const user = await this.findOne({ email }).select("+password");
   if (!user) {
     throw new Error("Incorrect email or password");
@@ -46,4 +50,5 @@ userSchema.statics.findUserByCredentials = async function (email, password) {
 
   return user;
 };
-module.exports = mongoose.model("user", userSchema); // capitalize model name
+
+module.exports = mongoose.model("User", userSchema);

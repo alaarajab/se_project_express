@@ -36,12 +36,12 @@ const createUser = async (req, res, next) => {
     const userObj = user.toObject();
     delete userObj.password;
 
-    res.status(CREATED_STATUS_CODE).send(userObj);
+    return res.status(CREATED_STATUS_CODE).send(userObj);
   } catch (err) {
     if (err.name === "ValidationError") {
       return next(new BadRequestError(err.message));
     }
-    next(err);
+    return next(err);
   }
 };
 
@@ -57,9 +57,9 @@ const getCurrentUser = async (req, res, next) => {
     const userObj = user.toObject();
     delete userObj.password;
 
-    res.status(OK_STATUS_CODE).send(userObj);
+    return res.status(OK_STATUS_CODE).send(userObj);
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };
 
@@ -81,12 +81,12 @@ const updateUserProfile = async (req, res, next) => {
     const userObj = updatedUser.toObject();
     delete userObj.password;
 
-    res.status(OK_STATUS_CODE).send(userObj);
+    return res.status(OK_STATUS_CODE).send(userObj);
   } catch (err) {
     if (err.name === "ValidationError") {
       return next(new BadRequestError(err.message));
     }
-    next(err);
+    return next(err);
   }
 };
 
@@ -103,12 +103,12 @@ const login = async (req, res, next) => {
 
     const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: "7d" });
 
-    res.status(OK_STATUS_CODE).send({ jwt: token });
+    return res.status(OK_STATUS_CODE).send({ jwt: token });
   } catch (err) {
     if (err.message === "Incorrect email or password") {
       return next(new UnauthorizedError("Incorrect email or password"));
     }
-    next(err);
+    return next(err);
   }
 };
 
