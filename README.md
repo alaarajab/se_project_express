@@ -84,7 +84,7 @@ project and some challenges I faced while building it.
 
 ## Final Project Pitch Video (sprint 15)
 
-Check out [this video](https://youtu.be/dCtKzAeNHj8), where I describe my
+Check out [this video](https://youtu.be/_YzA7rw7LWk), where I describe my
 project and some challenges I faced while building it.
 
 ## Links
