@@ -11,11 +11,6 @@ const {
 router.use(auth);
 
 router.get("/me", getCurrentUser);
-router.patch(
-  "/me",
-
-  updateUserProfile,
-  validateUserUpdateBody
-); // validate body before updating
+router.patch("/me", validateUserUpdateBody, updateUserProfile); // validate body before updating
 
 module.exports = router;
