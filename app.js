@@ -43,7 +43,7 @@ app.use(errorHandler);
 
 // MongoDB connection
 mongoose
-  .connect("mongodb://127.0.0.1:27017/wtwr_db")
+  .connect(process.env.MONGO_URI)
   .then(() => log.info("Connected to MongoDB"))
   .catch(log.error);
 
